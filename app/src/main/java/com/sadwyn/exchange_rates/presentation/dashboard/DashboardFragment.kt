@@ -106,7 +106,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 getDefaultUIUtil().clearView(foregroundView)
             }
         })
-
+        binding.dashboardRecyclerView.itemAnimator = null
         itemTouchHelper.attachToRecyclerView(binding.dashboardRecyclerView)
     }
 
