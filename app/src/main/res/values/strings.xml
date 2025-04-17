@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ExchangeRates</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_search">Search</string>
+    <string name="currency_value_placeholder">%5s</string>
+    <string name="empty_state_dashboard_text">There is no assets now.\nYou can add some assets from search tab</string>
+</resources>
