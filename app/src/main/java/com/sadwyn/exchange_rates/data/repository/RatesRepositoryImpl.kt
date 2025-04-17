@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.text.NumberFormat
 import java.util.Locale
 import javax.inject.Inject
 
@@ -60,8 +61,10 @@ class RatesRepositoryImpl @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    private fun Double.roundTo(decimals: Int, locale: Locale = Locale.US): Double {
+    private fun Double.roundTo(decimals: Int, locale: Locale): Double {
         val formatted = String.format(locale, "%.${decimals}f", this)
-        return formatted.toDouble()
+        val format = NumberFormat.getInstance(locale)
+        val number = format.parse(formatted)?.toDouble()
+        return number ?: 0.0
     }
 }
