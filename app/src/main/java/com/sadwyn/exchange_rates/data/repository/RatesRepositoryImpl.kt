@@ -1,6 +1,5 @@
 package com.sadwyn.exchange_rates.data.repository
 
-import com.sadwyn.exchange_rates.data.RateResponse
 import com.sadwyn.exchange_rates.data.api.OpenExchangeApi
 import com.sadwyn.exchange_rates.data.db.dao.FavoriteAssetsDao
 import com.sadwyn.exchange_rates.data.db.entity.FavoriteAsset
@@ -9,9 +8,9 @@ import com.sadwyn.exchange_rates.domain.exceptions.NetworkException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -29,7 +28,7 @@ class RatesRepositoryImpl @Inject constructor(
                 FavoriteAsset(
                     it.key,
                     it.value.toString(),
-                    (it.value + randomDouble()).roundTo(5)
+                    (it.value + randomDouble()).roundTo(5, Locale.getDefault())
                 )
             }
         }.orEmpty()
@@ -52,16 +51,17 @@ class RatesRepositoryImpl @Inject constructor(
         while (true) {
             try {
                 loadLatestRates()
+                emit(null)
             } catch (e: Throwable) {
                 emit(NetworkException("Problem with network", e))
             }
-            emit(null)
             delay(intervalMillis)
         }
     }.flowOn(Dispatchers.IO)
 
 
-    private fun Double.roundTo(decimals: Int): Double {
-        return "%.${decimals}f".format(this).toDouble()
+    private fun Double.roundTo(decimals: Int, locale: Locale = Locale.US): Double {
+        val formatted = String.format(locale, "%.${decimals}f", this)
+        return formatted.toDouble()
     }
 }
